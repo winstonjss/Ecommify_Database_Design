@@ -1,0 +1,24 @@
+{
+    "_id": 12345,
+    "name": "Nombre del Producto",
+    "specifications": {
+        "marca": "Sony",
+        "color": "Negro",
+        "almacenamiento": "1TB"
+    },
+    "photos": [
+        "https://images.com/foto1.jpg",
+        "https://images.com/foto2.jpg"
+    ],
+    "category": {
+        "id": 1,
+        "name": "Electrónicos"
+    },
+    "seller_summary": {
+        "id": 9876,
+        "name": "Nombre Vendedor",
+        "last_name": "Apellido Vendedor",
+        "phone_number": "1234567890",
+        "zip_code_prefix": 760001
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "_id": "PROD-123",
+    "name": "Camiseta Algodón Premium",
+    "category": "Ropa",
+    "overall_rating": 4.8,
+    "total_reviews_count": 150,
+    "recent_reviews": [
+        {
+            "review_id": "66479b...",
+            "customer_name": "Jhon Doe",
+            "score": 5,
+            "comment": "Excelente calidad",
+            "date": "2026-05-17"
+        }
+    ]
+}

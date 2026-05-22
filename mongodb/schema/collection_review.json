@@ -1,0 +1,14 @@
+{
+    "_id": "66479b...",
+    "score": 5,
+    "comment": "Excelente calidad, muy recomendado.",
+    "created_at": "2026-05-17T18:00:00Z",
+    "product_extended": {
+        "product_id": "PROD-123",
+        "name": "Camiseta Algodón Premium"
+    },
+    "customer_extended": {
+        "customer_id": "CUST-456",
+        "name": "Jhon Doe"
+    }
+}
