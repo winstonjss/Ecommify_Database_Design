@@ -38,17 +38,6 @@ WHERE customer_identification_number = '123456789' -- Reemplazar por ID real
 ORDER BY created_at DESC;
 
 -- Búsqueda Semiestructurada de Productos
--- ANTES
-EXPLAIN (ANALYZE, BUFFERS, TIMING)
-SELECT id, name, specifications, photos
-FROM products
-WHERE category_id = 5 -- Reemplazar por ID de categoría real
-  AND specifications ->> 'brand' = 'Sony' -- Filtro interno de JSONB
-  AND specifications ->> 'color' = 'Black'
-ORDER BY name ASC
-LIMIT 20;
-
--- DESPUES
 EXPLAIN (ANALYZE, BUFFERS, TIMING)
 SELECT id, name, specifications, photos
 FROM products
