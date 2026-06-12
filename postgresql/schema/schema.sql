@@ -1,10 +1,13 @@
+-- Crear extensiones
+CREATE EXTENSION postgis;
+
 -- Crear el tipo de datos ADDRESS
 CREATE TYPE address_type AS ( line_1 TEXT, line_2 TEXT, neighborhood TEXT, directions TEXT ); 
 
 -- 1. Tablas Maestras (Independientes)
 CREATE TABLE geolocations (
     zip_code_prefix INT PRIMARY KEY,
-    location GEOMETRY(Point,4326) FLOAT NOT NULL,
+    location GEOMETRY(Point,4326) NOT NULL,
     city VARCHAR(50) NOT NULL,
     state VARCHAR(2) NOT NULL
 );
@@ -31,7 +34,7 @@ CREATE TABLE customers (
     name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     phone_number VARCHAR(10) NOT NULL,
-    address ADDRESS NOT NULL,
+    address address_type NOT NULL,
     FOREIGN KEY (geolocation_zip_code_prefix) REFERENCES geolocations(zip_code_prefix)
 );
 
@@ -57,7 +60,7 @@ CREATE TABLE products (
 -- 3. Tablas de Procesos (Pedidos y Relacionados)
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
-    customer_identification_number VARCHAR(50) NOT NULL,
+    customer_identification_number VARCHAR(50) NOT NULL unique,
     order_status_id INT NOT NULL,
     purchase_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     approved_at TIMESTAMP,
@@ -66,8 +69,11 @@ CREATE TABLE orders (
     estimated_delivery_date TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_identification_number) REFERENCES customers(identification_number),
-    FOREIGN KEY (order_status_id) REFERENCES order_statuses(id)
-)PARTITION BY RANGE (created_at);
+    FOREIGN KEY (order_status_id) REFERENCES order_statuses(id),
+    CONSTRAINT orders_id_created_at_idx UNIQUE (id, created_at)
+);
+-- Habilitar para particionar, id+created_at debe ser parte de PRIMARY_KEY
+-- PARTITION BY RANGE (id, created_at);
 
 CREATE TABLE order_items (
     id SERIAL PRIMARY KEY,
@@ -81,8 +87,11 @@ CREATE TABLE order_items (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (seller_id) REFERENCES sellers(id),
-    FOREIGN KEY (order_id) REFERENCES orders(id)
-)PARTITION BY RANGE (created_at);
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    CONSTRAINT order_items_id_created_at_idx UNIQUE (id, created_at)
+);
+-- Habilitar para particionar, id+created_at debe ser parte de PRIMARY_KEY
+-- PARTITION BY RANGE (id, created_at);
 
 CREATE TABLE order_payments (
     id SERIAL PRIMARY KEY,
@@ -91,7 +100,6 @@ CREATE TABLE order_payments (
     sequential INT NOT NULL,
     installments INT NOT NULL CHECK (installments > 0),
     value FLOAT NOT NULL CHECK (value > 0),
-    PRIMARY KEY (id),
     FOREIGN KEY (order_id) REFERENCES orders(id),
     FOREIGN KEY (payment_type_id) REFERENCES payment_types(id)
 );
