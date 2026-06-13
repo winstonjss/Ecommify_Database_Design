@@ -6,7 +6,8 @@ CREATE TYPE address_type AS ( line_1 TEXT, line_2 TEXT, neighborhood TEXT, direc
 
 -- 1. Tablas Maestras (Independientes)
 CREATE TABLE geolocations (
-    zip_code_prefix INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
+    zip_code_prefix TEXT NOT NULL,
     location GEOMETRY(Point,4326) NOT NULL,
     city VARCHAR(50) NOT NULL,
     state VARCHAR(2) NOT NULL
