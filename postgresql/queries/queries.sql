@@ -1,6 +1,7 @@
 -- Reporte de Ventas en Tiempo Real
 EXPLAIN (ANALYZE, BUFFERS, TIMING)
 SELECT 
+    -- Forzamos el truncado de fecha, pero ahora estará respaldado por índices
     DATE_TRUNC('month', o.purchase_timestamp)::DATE AS sales_month,
     c.id AS category_id,
     c.name AS category_name,
@@ -9,12 +10,15 @@ SELECT
     ROUND(SUM(oi.quantity * oi.price)::numeric, 2) AS gross_revenue,
     ROUND(SUM(oi.freight_value)::numeric, 2) AS total_freight_cost
 FROM orders o
-JOIN order_items oi ON o.id = oi.order_id AND o.created_at = oi.created_at
+JOIN order_items oi ON o.id = oi.order_id
 JOIN products p ON oi.product_id = p.id
 JOIN categories c ON p.category_id = c.id
-WHERE o.order_status_id NOT IN (SELECT id FROM order_statuses WHERE name = 'Canceled')
+WHERE NOT EXISTS (
+    SELECT 1 FROM order_statuses os WHERE os.id = o.order_status_id AND os.name = 'Canceled'
+)
 GROUP BY 1, 2, 3
 ORDER BY sales_month DESC, gross_revenue DESC;
+
 
 --  Perfil transaccional en el Checkout
 EXPLAIN (ANALYZE, BUFFERS, TIMING)
