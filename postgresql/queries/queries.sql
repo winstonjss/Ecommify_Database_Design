@@ -52,7 +52,7 @@ ORDER BY name ASC
 LIMIT 20;
 
 -- Logística Espacial (Cálculo de Distancia Cliente - Vendedor)
-EXPLAIN (ANALYZE)
+EXPLAIN (ANALYZE, BUFFERS, TIMING)
 SELECT 
     o.id AS order_id,
     c.identification_number AS customer_id,
