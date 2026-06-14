@@ -42,12 +42,32 @@ git clone https://github.com
 cd Ecommify_Database_Design
 ```
 
-### 2. Configurar la Base de Datos Relacional (PostgreSQL)
-* Conéctate a tu instancia de PostgreSQL y crea la base de datos:
+### 2. Desplegar la Base de Datos Relacional Completa (PostgreSQL)
+Para levantar el modelo relacional junto con sus optimizaciones y datos de prueba, conéctate a tu cliente de PostgreSQL (psql, pgAdmin o DBeaver) y ejecuta los scripts en el siguiente **orden jerárquico estricto**:
+
+* **Paso A: Crear la base de datos**
   ```sql
   CREATE DATABASE ecommify_db;
   ```
-* Ejecuta los scripts en orden cronológico o estructural ubicados dentro de la carpeta `/postgresql` para levantar las tablas, relaciones y funciones.
+  *(Asegúrate de conectarte a `ecommify_db` antes de proceder con los siguientes comandos)*
+
+* **Paso B: Levantar la estructura (Esquema)**
+  Ejecuta el archivo del esquema para construir las tablas, llaves primarias, foráneas y restricciones `CHECK`:
+  ```bash
+  psql -d ecommify_db -f postgresql/schema.sql
+  ```
+
+* **Paso C: Cargar los datos semilla (Seeds)**
+  Pobla las tablas con datos iniciales de prueba (usuarios, productos, categorías) antes de aplicar restricciones de consulta avanzadas:
+  ```bash
+  psql -d ecommify_db -f postgresql/seeds.sql
+  ```
+
+* **Paso D: Crear los Índices de optimización**
+  Una vez que las tablas contienen registros, genera los índices compuestos, parciales y de búsqueda de texto completo para agilizar el rendimiento de las consultas:
+  ```bash
+  psql -d ecommify_db -f postgresql/indexes.sql
+  ```
 
 ### 3. Configurar la Base de Datos NoSQL (MongoDB)
 * Importa o ejecuta las estructuras de colecciones documentadas en la carpeta `/mongodb/schema` en tu instancia local o clúster de MongoDB Atlas.
