@@ -1,0 +1,60 @@
+[
+    { $limit: 700
+    },
+    {
+    $lookup: {
+      from: "olist_order_items_dataset",
+      localField: "order_id",
+      foreignField: "order_id",
+      as: "item"
+        }
+    },
+    { $unwind: "$item"
+    },
+    {
+    $lookup: {
+      from: "olist_products_dataset",
+      localField: "item.product_id",
+      foreignField: "product_id",
+      as: "product"
+        }
+    },
+    { $unwind: "$product"
+    },
+    {
+    $lookup: {
+      from: "product_category_name_translation",
+      localField: "product.product_category_name",
+      foreignField: "product_category_name",
+      as: "category"
+        }
+    },
+    {
+    $project: {
+      _id: 1,
+      score: "$review_score",
+      comment: "$review_comment_message",
+      title: "$review_comment_title",
+      created_at: "$review_creation_date",
+      product_extended: {
+        product_id: "$product.product_id",
+        category_pt: "$product.product_category_name",
+        category_en: {
+          $arrayElemAt: [
+                        "$category.product_category_name_english",
+                        0
+                    ]
+                },
+        weight_g: "$product.product_weight_g",
+        photos_qty: "$product.product_photos_qty"
+            },
+      order_extended: {
+        order_id: "$order_id",
+        item_id: "$item.order_item_id",
+        seller_id: "$item.seller_id",
+        price: "$item.price",
+        freight_value: "$item.freight_value"
+            }
+        }
+    }
+]

@@ -1,0 +1,36 @@
+[
+  {
+    $match: {
+      product_id: "21b1c2f67a9aafb5af0eb06c13b9dbda"
+    }
+  },
+  {
+    $lookup: {
+      from: "olist_order_reviews_dataset",
+      localField: "order_id",
+      foreignField: "order_id",
+      as: "review"
+    }
+  },
+
+  {
+    $unwind: "$review"
+  },
+  {
+    $sort: {
+      "review.review_creation_date": -1
+    }
+  },
+  {
+    $limit: 10
+  },
+  {
+    $project: {
+      _id: 0,
+      review_id: "$review.review_id",
+      score: "$review.review_score",
+      comment: "$review.review_comment_message",
+      date: "$review.review_creation_date"
+    }
+  }
+]
