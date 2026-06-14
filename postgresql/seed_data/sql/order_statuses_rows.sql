@@ -1,0 +1,1 @@
+INSERT INTO "public"."order_statuses" ("id", "name") VALUES (1, 'delivered'), (2, 'shipped'), (3, 'canceled'), (4, 'unavailable'), (5, 'invoiced'), (6, 'processing'), (7, 'created'), (8, 'approved');

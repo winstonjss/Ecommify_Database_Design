@@ -1,0 +1,1 @@
+INSERT INTO "public"."payment_types" ("id", "name") VALUES (1, 'credit_card'), (2, 'boleto'), (3, 'voucher'), (4, 'debit_card'), (5, 'not_defined');
